@@ -12,6 +12,7 @@ surname: { type: String, required: true },
 password: { type: String, required: true },
 dateOfBirth: { type: Date, required: true },
 games: [ { type: Schema.Types.ObjectId, ref: 'Game' } ],
+characters: [ { type: Schema.Types.ObjectId, ref: 'Character' } ],
 role: { type: String, required: true },
 },
  { timestamps: true }
@@ -22,7 +23,7 @@ userSchema.statics.checkCredentials = async function (email, plainPW) {
     console.log("pw:",plainPW)
     //finds user by email
     //if user => compare PWs 
-    const user = await this.findOne({email: email})  
+    const user = await this.findOne({email: email}).populate({path: "games"})  
   
     if (user) {
         const passwordMatch = await bcrypt.compare(plainPW, user.password)

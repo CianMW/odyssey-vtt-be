@@ -2,6 +2,7 @@ import express from "express";
 import { adminAuth } from "../../middlewares/adminAuth.js";
 import authorizationMiddle from "../../middlewares/authorization.js";
 import UserModel from "./schema.js"
+import CharacterModel from "../Characters/schema.js"
 
 const usersRouter = express.Router() 
 
@@ -25,7 +26,7 @@ usersRouter
   } catch(error) {
     console.log(error)
       res.status(400).send(error)
-  }
+      }
   })
 
   //=====================================================================  
@@ -35,7 +36,9 @@ usersRouter
 .get("/me", authorizationMiddle, async (req, res, next) => {
   try {
     if (req.user) {
-      res.send(req.user);
+      const usersCharacters = await CharacterModel.find({editors: req.user._id})
+      req.user.characters = usersCharacters
+      await res.send(req.user);
     } else {
       next(createHttpError(404, `User with the ${id} not found!`));
     }

@@ -1,1 +1,3 @@
-export const inGameUsers = []
+let inGameUsers = []
+
+export default inGameUsers

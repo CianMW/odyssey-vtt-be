@@ -25,6 +25,7 @@ money: {
     sp: Number,
     cp: Number
     },
+characterImage:{ type: String },
 equipment: [{ 
     equipmentName: String,
     type: String,
