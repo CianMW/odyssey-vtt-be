@@ -3,7 +3,8 @@ import { adminAuth } from "../../middlewares/adminAuth.js";
 import authorizationMiddle from "../../middlewares/authorization.js";
 import { gameOwnerAuth } from "../../middlewares/gameOwnerAuth.js";
 import GameModel from "./schema.js"
-
+import UserModel from ".././users/schema.js"
+import createHttpError from "http-errors";
 const gamesRouter = express.Router() 
 
 
@@ -25,11 +26,22 @@ gamesRouter
   try {
       console.log("the user is : ", req.user)
       const body = req.body
+      console.log("THIS IS THE BODY", body)
       req.body.ownerId = req.user._id
     const newGame = new GameModel(body);
     const { _id } = await newGame.save();
-
+    if (_id) {
+      const userToUpdate = await UserModel.findById(req.user._id.toString())
+      if (userToUpdate){
+        console.log("THE USER !!!!",userToUpdate)
+        userToUpdate.games.push(_id)
+        await userToUpdate.save()
+      } else {
+        next(createHttpError(400, "There was a problem finding user"))
+      }
       res.status(201).send({_id});    
+    }
+
   } catch(error) {
     console.log(error)
       res.status(400).send(error)

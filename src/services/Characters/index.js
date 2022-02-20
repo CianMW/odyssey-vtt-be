@@ -28,7 +28,7 @@ characterRouter
 
   const randomName = FCG.Names.generate();
       const body = {
-          editors : [{}],
+          editors : [req.user._id],
           characterName : randomName.name,
           race : "",
           experience : 0,
